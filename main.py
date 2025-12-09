@@ -17,8 +17,8 @@ SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_APIKEY")
-DAILY_REVIEW_COUNT = int(os.getenv("DAILY_REVIEW_COUNT", 20))
-MAX_STAGES = int(os.getenv("MAX_REVIEWS", 7))
+NEW_WORDS_PER_DAY = int(os.getenv("NEW_WORDS_PER_DAY", 20)) 
+MAX_STAGES = int(os.getenv("MAX_REVIEWS", 8))
 
 FILES = {
     "vocab": "vocab.txt",
@@ -59,15 +59,15 @@ def fetch_word_details_deepseek(word):
     
     url = "https://api.deepseek.com/chat/completions"
     
-    # 修改了 Prompt，增加了 pos 和 variations 字段的要求
+    # 【修改点 2】优化 Prompt，加入声调标记要求
     prompt = f"""
     请作为日语老师，分析日语单词: 「{word}」。
     请返回严格的 JSON 格式，包含以下字段：
-    - word: 原词
-    - readings: [平假名读音1, 平假名读音2,...]
-    - pos: 字符串，详细的词性分类 (例如: "五段动词·他动词" 或 "な形容词" 或 "副词")
+    - word: 日语原词
+    - readings: [字符串数组], 请在平假名读音后严格标注声调数字(0为平板, 1为头高等)。格式如: "がくせい [0]", "あめ [1]"
+    - pos: 字符串，详细的词性分类 (例如: "五段动词·他动词" 或 "な形容词")
     - variations: [字符串数组]，列出该词常见的3-4个变形或搭配。
-      (如果是动词/形容词，请列出如 ["ます形: xxx", "て形: xxx", "ない形: xxx"]；如果是名词没有变形，请列出常用搭配或"无")
+      (如果是动词/形容词，请列出如 ["ます形: xxx", "て形: xxx"]；如果是名词，列出常用搭配)
     - meanings: [
         {{ "meaning": 中文释义1, "example_jp": 日语例句1, "example_cn": 中文例句1 }},
         {{ "meaning": 中文释义2, "example_jp": 日语例句2, "example_cn": 中文例句2 }}
@@ -96,7 +96,6 @@ def fetch_word_details_deepseek(word):
         return json.loads(content)
     except Exception as e:
         print(f"❌ 获取 {word} 详情失败: {e}")
-        # 返回结构包含新字段的默认值
         return {
             "word": word,
             "readings": ["查询失败"],
@@ -105,7 +104,7 @@ def fetch_word_details_deepseek(word):
             "meanings": [{"meaning": "API调用失败", "example_jp": "", "example_cn": ""}]
         }
 
-# ---------- 发送邮件 (已修改) ----------
+# ---------- 发送邮件 ----------
 def send_email(review_list):
     if not review_list:
         print("📭 今日无复习内容，跳过发送邮件。")
@@ -113,34 +112,40 @@ def send_email(review_list):
 
     today_str = datetime.date.today().strftime("%Y-%m-%d")
     
-    # 邮件开头
+    # 统计新词和旧词数量用于标题
+    new_count = sum(1 for item in review_list if item['stage'] == 0)
+    review_count = len(review_list) - new_count
+
     html_content = f"""
     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; color: #333;">
         <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">📅 日语记忆曲线复习表 ({today_str})</h2>
-        <p>根据<b>艾宾浩斯遗忘曲线</b>，今日为您安排了 <b>{len(review_list)}</b> 个单词。</p>
+        <p>今日任务：<b>{len(review_list)}</b> 个单词 (🆕 新词: {new_count} / 🔄 复习: {review_count})</p>
     """
 
     for item in review_list:
         word = item['word']
         stage = item['stage']
         stage_color = "#2ecc71" if stage > 5 else "#1abc9c" if stage > 3 else "#f1c40f" if stage > 1 else "#e74c3c"
+        
+        # 新词给一个特殊的标记颜色
+        if stage == 0:
+            stage_display = '<span style="background-color:#e74c3c; color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; margin-left:5px;">NEW</span>'
+        else:
+            stage_display = f'<span style="display:inline-block;width:10px;height:10px;background-color:{stage_color};border-radius:50%; margin-left:5px;" title="熟练度等级: {stage}"></span>'
 
         details = fetch_word_details_deepseek(word)
         readings = " / ".join(details.get("readings", []))
         
-        # 获取新字段，如果不存在则给默认值
         pos = details.get("pos", "暂无词性")
         variations = details.get("variations", [])
         variations_str = "、".join(variations) if variations else "无常见变形"
 
-        # 单词卡片样式 (增加了词性和变形的显示)
         html_content += f"""
         <div style="border:1px solid #e0e0e0; border-radius:8px; padding:10px; margin-bottom:15px; background-color:#fafafa;">
             <h3 style="margin:0 0 5px 0; color:#2c3e50;">
-                {word} 
-                <span style="display:inline-block;width:10px;height:10px;background-color:{stage_color};border-radius:50%; margin-left:5px;" title="熟练度等级: {stage}"></span>
+                {word} {stage_display}
             </h3>
-            <p style="margin:2px 0; color:#555;"><b>读音:</b> {readings}</p>
+            <p style="margin:2px 0; color:#555;"><b>读音:</b> <span style="color:#d35400; font-family:'Hiragino Sans', sans-serif;">{readings}</span></p>
             <p style="margin:2px 0; color:#555;"><b>词性:</b> <span style="background-color:#e8f4f8; padding:2px 5px; border-radius:3px; color:#2980b9; font-size:0.9em;">{pos}</span></p>
             <p style="margin:2px 0; color:#555;"><b>变形:</b> <span style="color:#7f8c8d; font-size:0.9em;">{variations_str}</span></p>
         """
@@ -158,11 +163,10 @@ def send_email(review_list):
 
     html_content += "<p style='text-align:center; color:#999; font-size:12px;'>Generated by DeepSeek AI | Spaced Repetition System</p></div>"
 
-    # 发送邮件
     message = MIMEText(html_content, 'html', 'utf-8')
     message['From'] = formataddr(("日语记忆助手", SENDER_EMAIL))
     message['To'] = RECEIVER_EMAIL
-    message['Subject'] = f'【记忆曲线】{today_str} 今日复习任务 ({len(review_list)}词)'
+    message['Subject'] = f'【记忆曲线】{today_str} 任务: {new_count}新词 + {review_count}复习'
 
     try:
         smtp_obj = smtplib.SMTP_SSL(SMTP_SERVER, 465)
@@ -173,37 +177,51 @@ def send_email(review_list):
     except Exception as e:
         print(f"❌ 邮件发送失败: {e}")
 
-# ---------- 主流程 ----------
+# ---------- 主流程 (已修改) ----------
 def main():
     vocab_list = load_vocab()
     progress = load_progress()
     today = datetime.date.today().isoformat()
     
-    review_queue = []
+    review_queue = [] # 最终的复习队列
+    due_reviews = []  # 到期复习的旧词
+    new_words = []    # 今日新词
 
-    # 筛选已到期的旧词
+    # 1. 筛选已到期的旧词 (全部收录，不做数量限制，保证复习效果)
     for word, info in progress.items():
-        if "stage" not in info: info["stage"] = info.get("count",0)
+        if "stage" not in info: info["stage"] = info.get("count", 0)
+        # 只要日期到了且没完成所有阶段，就必须复习
         if info['next_review'] <= today and info['stage'] < MAX_STAGES:
-            review_queue.append(word)
+            due_reviews.append(word)
     
-    review_queue.sort(key=lambda w: progress[w]['next_review'])
+    # 对旧词按日期排序
+    due_reviews.sort(key=lambda w: progress[w]['next_review'])
 
-    # 补充新词
+    # 2. 补充固定数量的新词 (保证每天都有新输入)
+    # 【修改点 3】 这里的逻辑改为：不管有多少旧词，雷打不动加 NEW_WORDS_PER_DAY 个新词
     for word in vocab_list:
-        if len(review_queue) >= DAILY_REVIEW_COUNT:
+        if len(new_words) >= NEW_WORDS_PER_DAY:
             break
         if word not in progress:
-            review_queue.append(word)
+            new_words.append(word)
 
-    print(f"📊 今日任务: {len(review_queue)} 个单词 (复习+新词)")
+    # 合并列表：先展示新词(可选)，再展示旧词，或者混合
+    # 这里我们把新词放前面，因为新词需要更多精力
+    review_queue = new_words + due_reviews
+
+    print(f"📊 今日任务总计: {len(review_queue)} 词")
+    print(f"   🔹 新词: {len(new_words)} (目标: {NEW_WORDS_PER_DAY})")
+    print(f"   🔸 复习: {len(due_reviews)}")
+
     if not review_queue:
-        print("🎉 今日没有需要复习的单词。")
+        print("🎉 今日没有需要复习的单词，且词库已空。")
         return
 
     email_data_list = []
 
+    # 处理队列
     for word in review_queue:
+        # 如果是新词，初始化进度
         if word not in progress:
             progress[word] = {
                 "stage": 0,
