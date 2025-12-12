@@ -2,14 +2,12 @@ import os
 import json
 import smtplib
 import datetime
-import requests
 import random
+import sqlite3
+import requests
 from email.mime.text import MIMEText
 from email.utils import formataddr
 from dotenv import load_dotenv
-
-# 引入本地工具函数
-from jisho_api import jisho_api
 
 # 加载环境变量
 load_dotenv()
@@ -22,32 +20,30 @@ SMTP_SERVER = os.getenv("SMTP_SERVER")
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_APIKEY")
 NEW_WORDS_PER_DAY = int(os.getenv("NEW_WORDS_PER_DAY", 20)) 
 MAX_STAGES = int(os.getenv("MAX_REVIEWS", 8))
+DB_PATH = "vocab/vocab.db"
 
-FILES = {
-    "vocab": "vocab/vocab.txt",
-    "json": "vocab/progress.json"
-}
+# ---------- 数据库辅助函数 ----------
 
-# 定义工具 Schema
-TOOLS_SCHEMA = [
-    {
-        "type": "function",
-        "function": {
-            "name": "jisho_api",
-            "description": "Search for a Japanese word using Jisho.org to get accurate readings, meanings, JLPT level, and parts of speech. Use this whenever analyzing a new word.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "word": {
-                        "type": "string",
-                        "description": "The Japanese word to search for."
-                    }
-                },
-                "required": ["word"]
-            }
-        }
-    }
-]
+def get_db_connection():
+    # 确保连接到 vocab/vocab.db
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row  # 允许通过列名访问数据
+    return conn
+
+def safe_parse_json_field(field_value):
+    """即使数据库存的是字符串格式的列表 (如 "['n5']"), 也要安全解析"""
+    if not field_value:
+        return []
+    if isinstance(field_value, list):
+        return field_value
+    try:
+        # 将单引号替换为双引号以符合 JSON 标准 (简单的容错处理)
+        # 注意：如果是复杂的嵌套结构，这可能不够完美，但对于简单的 list 字符串通常有效
+        cleaned_val = str(field_value).replace("'", '"')
+        return json.loads(cleaned_val)
+    except:
+        # 如果解析失败，直接作为单元素列表返回
+        return [str(field_value)]
 
 # ---------- 遗忘曲线计算下一次复习 ----------
 def calculate_next_review_date(current_stage):
@@ -56,53 +52,57 @@ def calculate_next_review_date(current_stage):
     fuzz = random.randint(-max(1, int(base_interval * 0.15)), max(1, int(base_interval * 0.15))) if base_interval > 4 else 0
     return max(1, base_interval + fuzz)
 
-# ---------- 词库与进度 ----------
-def load_vocab():
-    if not os.path.exists(FILES["vocab"]):
-        print("❌ 未找到 vocab.txt")
-        return []
-    with open(FILES["vocab"], "r", encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip()]
-
-def load_progress():
-    if not os.path.exists(FILES["json"]):
-        return {}
-    with open(FILES["json"], "r", encoding="utf-8") as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return {}
-
-def save_progress(data):
-    with open(FILES["json"], "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-# ---------- 调用 DeepSeek API 获取单词详情 (核心修改) ----------
-def fetch_word_details_deepseek(word):
+# ---------- 核心逻辑：DeepSeek API 调用 ----------
+def fetch_word_details_deepseek(word, db_info):
+    """
+    word: 单词文本
+    db_info: 数据库中的原始行数据 (作为参考 context)
+    """
     print(f"🤖 正在向 DeepSeek 查询单词: {word} ...")
     
     url = "https://api.deepseek.com/chat/completions"
     
-    # 【修改点 1】 Prompt 中加入对 jlpt 和 is_common 的提取要求
-    prompt = f"""
-    请作为日语老师，分析日语单词: 「{word}」。
+    # 提取数据库参考信息 (仅供 AI 参考)
+    # 使用 .get() 并非必须，因为 row_factory=sqlite3.Row 支持字典式访问，但为了安全起见
+    ref_reading = db_info['reading'] if db_info['reading'] else "未知"
+    ref_defs = db_info['definitions'] if db_info['definitions'] else "未知"
+    ref_pos = db_info['part_of_speech'] if db_info['part_of_speech'] else "未知"
     
-    【重要步骤】
-    1. 必须先调用 `jisho_api` 工具查询该单词。
-    2. 参考工具返回结果中的 `jlpt` (如 ["jlpt-n5"]) 和 `is_common` (boolean) 字段。
-    3. 结合工具的释义和你自己的知识生成详细分析。
+    # is_common 是 0/1，转换显示
+    ref_is_common = "是" if db_info['is_common'] == 1 else "否"
+    ref_jlpt = db_info['jlpt'] if db_info['jlpt'] else "未知"
+    
+    # Prompt 逻辑：将数据库信息作为 Context 给 AI
+    prompt = f"""
+    请作为日语老师，详细分析日语单词: 「{word}」。
+    
+    【参考信息 (来自数据库，仅供确认词义，请勿直接照抄英文)】
+    - 参考读音: {ref_reading}
+    - 原始释义: {ref_defs}
+    - 参考词性: {ref_pos}
+    - 是否常用: {ref_is_common}
+    - 参考等级: {ref_jlpt}
 
-    最终请返回严格的 JSON 格式，包含以下字段：
-    - word: 日语原词
-    - readings: [字符串数组], 标注严格的平假名读音。如有多个则全部列出。
-    - jlpt: [字符串数组], 从工具结果中得出 (例如 ["N3"]，如果没有则为空数组)。
-    - is_common: 布尔值, 从工具结果中提取 (True/False)。
-    - pos: 字符串，详细的词性分类。(例如: "五段动词·他动词" 或 "な形容词")
-    - variations: [字符串数组]，列出该词常见的3-4个变形或搭配。
-    - meanings: [
-        {{ "meaning": 中文释义1, "example_jp": 日语例句1, "example_cn": 中文例句1 }},
-        {{ "meaning": 中文释义2, "example_jp": 日语例句2, "example_cn": 中文例句2 }}
-      ]
+    【任务要求】
+    1. **读音**: 给出准确的平假名读音。
+    2. **释义**: 结合参考信息，给出**中文**释义。如果有多个常用义项，请分条列出。
+    3. **例句**: 为每个义项编写一个地道的日语例句，并附带中文翻译。
+    4. **属性**: 判断 JLPT 等级、是否常用、详细词性。
+    5. **变形**: 列出常见的动词/形容词变形，或名词的常见搭配。
+
+    最终请返回严格的 JSON 格式 (不要包含 markdown 代码块标记)：
+    {{
+        "word": "{word}",
+        "readings": ["平假名1", "平假名2"],
+        "jlpt": ["N5" 或 "N3" 等],
+        "is_common": true/false,
+        "pos": "详细词性 (例如: 五段动词·他动词)",
+        "variations": ["变形1", "搭配1"],
+        "meanings": [
+            {{ "meaning": "中文释义1", "example_jp": "日语例句1", "example_cn": "中文例句1" }},
+            {{ "meaning": "中文释义2", "example_jp": "日语例句2", "example_cn": "中文例句2" }}
+        ]
+    }}
     """
     
     messages = [
@@ -115,65 +115,33 @@ def fetch_word_details_deepseek(word):
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
     }
 
-    # Tool Calling 循环
-    for _ in range(3): 
-        payload = {
+    try:
+        response = requests.post(url, json={
             "model": "deepseek-chat",
             "messages": messages,
             "response_format": {"type": "json_object"},
-            "tools": TOOLS_SCHEMA 
+            "temperature": 1.0 
+        }, headers=headers)
+        
+        response.raise_for_status()
+        response_data = response.json()
+        content = response_data['choices'][0]['message']['content']
+        return json.loads(content)
+
+    except Exception as e:
+        print(f"❌ 获取 {word} 详情失败: {e}")
+        # 降级返回（使用数据库的基础信息兜底）
+        return {
+            "word": word,
+            "readings": [str(ref_reading)],
+            "jlpt": safe_parse_json_field(ref_jlpt),
+            "is_common": bool(db_info['is_common']),
+            "pos": str(ref_pos),
+            "variations": [],
+            "meanings": [{"meaning": f"API调用失败，原始释义: {ref_defs}", "example_jp": "", "example_cn": ""}]
         }
 
-        try:
-            response = requests.post(url, json=payload, headers=headers)
-            response.raise_for_status()
-            response_data = response.json()
-            
-            choice = response_data['choices'][0]
-            message = choice['message']
-            
-            # 情况 A: 模型请求工具
-            if message.get('tool_calls'):
-                messages.append(message)
-                
-                tool_calls = message['tool_calls']
-                for tool_call in tool_calls:
-                    function_name = tool_call['function']['name']
-                    func_args = json.loads(tool_call['function']['arguments'])
-                    call_id = tool_call['id']
-                    
-                    if function_name == 'jisho_api':
-                        print(f"   ⚙️ 触发工具: jisho_api('{func_args.get('word')}')")
-                        tool_result = jisho_api(func_args.get('word'))
-                        
-                        messages.append({
-                            "role": "tool",
-                            "tool_call_id": call_id,
-                            "content": json.dumps(tool_result, ensure_ascii=False)
-                        })
-                continue
-            
-            # 情况 B: 模型生成最终 JSON
-            else:
-                content = message['content']
-                return json.loads(content)
-
-        except Exception as e:
-            print(f"❌ 获取 {word} 详情失败: {e}")
-            # 降级返回（包含默认的 jlpt/is_common）
-            return {
-                "word": word,
-                "readings": ["查询失败"],
-                "jlpt": [],
-                "is_common": False,
-                "pos": "未知",
-                "variations": [],
-                "meanings": [{"meaning": "API调用失败", "example_jp": "", "example_cn": ""}]
-            }
-
-    return {}
-
-# ---------- 发送邮件 (UI 修改) ----------
+# ---------- 发送邮件 (保持 UI 美观) ----------
 def send_email(review_list):
     if not review_list:
         print("📭 今日无复习内容，跳过发送邮件。")
@@ -193,6 +161,7 @@ def send_email(review_list):
     for item in review_list:
         word = item['word']
         stage = item['stage']
+        db_raw_info = item['db_raw_info'] # 获取数据库原始数据
         
         # 熟练度颜色条
         stage_color = "#2ecc71" if stage > 5 else "#1abc9c" if stage > 3 else "#f1c40f" if stage > 1 else "#e74c3c"
@@ -201,25 +170,21 @@ def send_email(review_list):
         else:
             stage_display = f'<span style="display:inline-block;width:10px;height:10px;background-color:{stage_color};border-radius:50%; margin-left:5px;" title="熟练度等级: {stage}"></span>'
 
-        # 获取详情
-        details = fetch_word_details_deepseek(word)
+        # 调用 API 生成内容
+        details = fetch_word_details_deepseek(word, db_raw_info)
         
         readings = " / ".join(details.get("readings", []))
         pos = details.get("pos", "暂无词性")
         variations = details.get("variations", [])
         variations_str = "、".join(variations) if variations else "无常见变形"
 
-        # 【修改点 2】 处理 JLPT 和 常用词 标签
+        # 标签 HTML 生成
         tags_html = ""
-        
-        # 处理 JLPT (Jisho 返回通常是 "jlpt-n3" 格式，或者模型处理后的 "N3")
         jlpt_list = details.get("jlpt", [])
         for lvl in jlpt_list:
-            # 简单的清洗，确保显示好看 (去掉 'jlpt-' 前缀如果存在)
             lvl_display = lvl.replace("jlpt-", "").upper()
             tags_html += f'<span style="background-color:#3498db; color:white; padding:2px 6px; border-radius:4px; font-size:0.7em; margin-right:5px;">{lvl_display}</span>'
 
-        # 处理 Is Common
         if details.get("is_common"):
             tags_html += '<span style="background-color:#27ae60; color:white; padding:2px 6px; border-radius:4px; font-size:0.7em; margin-right:5px;">常用</span>'
 
@@ -249,7 +214,7 @@ def send_email(review_list):
 
         html_content += "</div>"
 
-    html_content += "<p style='text-align:center; color:#999; font-size:12px;'>Generated by DeepSeek AI + Jisho.org</p></div>"
+    html_content += "<p style='text-align:center; color:#999; font-size:12px;'>Generated by DeepSeek AI (Ref: SQLite)</p></div>"
 
     message = MIMEText(html_content, 'html', 'utf-8')
     message['From'] = formataddr(("日语单词助手", SENDER_EMAIL))
@@ -265,28 +230,31 @@ def send_email(review_list):
     except Exception as e:
         print(f"❌ 邮件发送失败: {e}")
 
-# ---------- 主流程 (不变) ----------
+# ---------- 主流程 (数据库版) ----------
 def main():
-    vocab_list = load_vocab()
-    progress = load_progress()
+    if not os.path.exists(DB_PATH):
+        print(f"❌ 未找到数据库文件: {DB_PATH}")
+        return
+
     today = datetime.date.today().isoformat()
-    
-    review_queue = [] 
-    due_reviews = []  
-    new_words = []    
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-    for word, info in progress.items():
-        if "stage" not in info: info["stage"] = info.get("count", 0)
-        if info['next_review'] <= today and info['stage'] < MAX_STAGES:
-            due_reviews.append(word)
-    
-    due_reviews.sort(key=lambda w: progress[w]['next_review'])
+    # 1. 获取今日复习 (Stage > 0 且 时间到)
+    # 注意：表名已修改为 vocab_progress
+    cursor.execute("""
+        SELECT * FROM vocab_progress 
+        WHERE stage > 0 AND next_review <= ? AND next_review != '' 
+        ORDER BY next_review ASC
+    """, (today,))
+    due_reviews = [dict(row) for row in cursor.fetchall()]
 
-    for word in vocab_list:
-        if len(new_words) >= NEW_WORDS_PER_DAY:
-            break
-        if word not in progress:
-            new_words.append(word)
+    # 2. 获取新词 (Stage = 0)
+    # 注意：表名已修改为 vocab_progress
+    cursor.execute("SELECT * FROM vocab_progress WHERE stage = 0 LIMIT ?", (NEW_WORDS_PER_DAY,))
+    new_words = [dict(row) for row in cursor.fetchall()]
+    
+    conn.close()
 
     review_queue = new_words + due_reviews
 
@@ -299,32 +267,59 @@ def main():
         return
 
     email_data_list = []
+    
+    # 用于批量更新数据库的列表
+    updates = []
 
-    for word in review_queue:
-        if word not in progress:
-            progress[word] = {
-                "stage": 0,
-                "next_review": today,
-                "first_seen": today
-            }
-
-        item_data = {
+    for item in review_queue:
+        word = item['word']
+        
+        # 如果是新词，设置 first_seen
+        first_seen = item['first_seen']
+        if not first_seen:
+            first_seen = today
+        
+        # 准备传给邮件函数的数据
+        email_data = {
             "word": word,
-            "stage": progress[word]["stage"]
+            "stage": item['stage'],
+            "db_raw_info": item  # 将整行数据传给 DeepSeek 函数做参考
         }
-        email_data_list.append(item_data)
+        email_data_list.append(email_data)
 
-        current_stage = progress[word]["stage"]
+        # 算法更新
+        current_stage = item['stage']
         days_delta = calculate_next_review_date(current_stage)
         next_date = datetime.date.today() + datetime.timedelta(days=days_delta)
+        
+        # 记录更新操作
+        updates.append({
+            "stage": current_stage + 1,
+            "first_seen": first_seen,
+            "last_review": today,
+            "next_review": next_date.isoformat(),
+            "word": word
+        })
 
-        progress[word]["stage"] += 1
-        progress[word]["next_review"] = next_date.isoformat()
-        progress[word]["last_review"] = today
-
+    # 发送邮件
     send_email(email_data_list)
-    save_progress(progress)
-    print("✅ 进度已更新。")
+
+    # 批量更新数据库 (使用 vocab_progress 表名)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.executemany("""
+            UPDATE vocab_progress 
+            SET stage = :stage, first_seen = :first_seen, 
+                last_review = :last_review, next_review = :next_review
+            WHERE word = :word
+        """, updates)
+        conn.commit()
+        print(f"✅ 数据库已更新 {len(updates)} 条记录。")
+    except Exception as e:
+        print(f"❌ 数据库更新失败: {e}")
+    finally:
+        conn.close()
 
 if __name__ == "__main__":
     main()
