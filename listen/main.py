@@ -4,8 +4,8 @@ import time
 import os
 
 def main():
-    model_path = "./whisper-large-v3"   # 本地模型
-    audio_dir = "./audio"               # 音频文件夹
+    model_path = "listen/whisper-large-v3"   # 本地模型
+    audio_dir = "listen/audio"               # 音频文件夹
 
     # === 1. 修改此处：寻找 audio/ 中的 MP3 文件 (也可以兼容 WAV) ===
     # 定义支持的格式

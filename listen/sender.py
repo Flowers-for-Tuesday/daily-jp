@@ -20,7 +20,7 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", 465))
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_APIKEY")
 
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
-AUDIO_DIR = "audio"
+AUDIO_DIR = "listen/audio"
 
 if not all([SENDER_EMAIL, SENDER_PASSWORD, RECEIVER_EMAIL, DEEPSEEK_API_KEY]):
     print("❌ 错误：重要的环境变量未加载。请检查 .env 文件。")
@@ -124,7 +124,7 @@ def send_email(subject_summary, formatted_japanese, translation_text, audio_path
     print("📧 正在构建并发送邮件...")
 
     msg = MIMEMultipart()
-    msg['From'] = formataddr(("日语学习助手", SENDER_EMAIL))
+    msg['From'] = formataddr(("日语听力助手", SENDER_EMAIL))
     msg['To'] = RECEIVER_EMAIL
     
     subject = f"今日听力：{subject_summary}"

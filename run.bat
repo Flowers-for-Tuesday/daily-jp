@@ -1,30 +1,26 @@
 @echo off
-REM ==========================
-REM 一键运行所有 Python 程序
-REM ==========================
+echo Starting daily Japanese learning pipeline...
 
-REM 保存当前目录
-set BASE_DIR=%~dp0
+REM === 1. Run vocab/main.py ===
+echo.
+echo Running vocab...
+python "%~dp0vocab\main.py"
 
-echo ==========================
-echo 运行 vocab\main.py
-echo ==========================
-cd /d "%BASE_DIR%vocab"
-call python -u "main.py"
+REM === 2. Run read/main.py ===
+echo.
+echo Running reading module...
+python "%~dp0read\main.py"
 
-echo ==========================
-echo 运行 listen\main.py
-echo ==========================
-cd /d "%BASE_DIR%listen"
-call python -u "main.py"
+REM === 3. Run listen/main.py ===
+echo.
+echo Running listening module...
+python "%~dp0listen\main.py"
 
-echo ==========================
-echo 运行 listen\sender.py
-echo ==========================
-cd /d "%BASE_DIR%listen"
-call python -u "sender.py"
+REM === 4. Run listen/sender.py ===
+echo.
+echo Sending email...
+python "%~dp0listen\sender.py"
 
-echo ==========================
-echo 全部程序执行完毕
-echo ==========================
+echo.
+echo All tasks completed.
 pause

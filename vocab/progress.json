@@ -1,542 +1,536 @@
 {
   "忘れる": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "映画": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "中": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "もう": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "彼": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "彼女": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "勉強する": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "十分": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "歌う": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "帰る": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "一緒に": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "ただ": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "きっと": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "子供": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "友達": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "月": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "春": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "夏": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "読む": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "音楽": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "場所": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "食べる": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "書く": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "見る": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "声": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "悪い": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "嬉しい": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "する": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "丸い": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "コンビニ": {
-    "stage": 2,
-    "next_review": "2025-12-11",
+    "stage": 3,
+    "next_review": "2025-12-15",
     "first_seen": "2025-12-08",
-    "last_review": "2025-12-09"
+    "last_review": "2025-12-11"
   },
   "買う": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "弁当": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "窓": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "服": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "靴": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "聞く": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "失礼する": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "外": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "時": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "涙": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "寂しい": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "言葉": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "楽しい": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "花火": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "貴方": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "瞬き": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "さえ": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "変わる": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "静か": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "億劫": {
-    "stage": 2,
-    "next_review": "2025-12-12",
+    "stage": 3,
+    "next_review": "2025-12-16",
     "first_seen": "2025-12-09",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-12"
   },
   "匂い": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "小さい": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "分かる": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "前": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "会い": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "届く": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "料理": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "眺める": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "頃": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "山": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "海": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "少し": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "つまうない": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "素晴らしい": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "遠い": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "近い": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "少ない": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "本当に": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "気持ち": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "おもしろい": {
-    "stage": 1,
-    "next_review": "2025-12-11",
+    "stage": 2,
+    "next_review": "2025-12-13",
     "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "last_review": "2025-12-11"
   },
   "大変": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "全然": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
-  },
-  "曇": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "思い出": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "溢れる": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "上手": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "大切": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "故郷": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "桜": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "咲く": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "毎日": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "毎朝": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "聴く": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "手紙": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "テレビ": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "優しい": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "リンゴ": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "プレゼント": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "働く": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   },
   "遅い": {
-    "stage": 1,
-    "next_review": "2025-12-11",
-    "first_seen": "2025-12-10",
-    "last_review": "2025-12-10"
+    "stage": 2,
+    "next_review": "2025-12-14",
+    "first_seen": "2025-12-11",
+    "last_review": "2025-12-12"
   }
 }
