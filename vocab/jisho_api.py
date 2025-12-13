@@ -2,7 +2,7 @@ import requests
 
 def jisho_api(word: str):
     """
-    调用 Jisho API 并返回简化信息（去掉 see_also）。
+    调用 Jisho API 并返回简化信息。
     
     返回字典字段：
     {
@@ -55,5 +55,16 @@ def jisho_api(word: str):
 
 # --- 使用示例 ---
 if __name__ == "__main__":
-    result = jisho_api("学校")
+    result = jisho_api("夜")
     print(result)
+    # 输出示例结果
+    """
+    {
+        'word': '夜',
+        'reading': 'よる',
+        'definitions': ['night', 'evening'],
+        'part_of_speech': ['Noun', 'Adverb (fukushi)'],
+        'is_common': True,
+        'jlpt': ['jlpt-n3', 'jlpt-n5']
+    }
+    """

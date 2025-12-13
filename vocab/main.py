@@ -76,7 +76,7 @@ def fetch_word_details_deepseek(word, db_info):
     prompt = f"""
     请作为日语老师，详细分析日语单词: 「{word}」。
     
-    【参考信息 (来自数据库，仅供确认词义，请勿直接照抄英文)】
+    【参考信息 (来自数据库，仅供确认基本信息，请勿直接照抄英文)】
     - 参考读音: {ref_reading}
     - 原始释义: {ref_defs}
     - 参考词性: {ref_pos}
@@ -96,7 +96,7 @@ def fetch_word_details_deepseek(word, db_info):
         "readings": ["平假名1", "平假名2"],
         "jlpt": ["N5" 或 "N3" 等],
         "is_common": true/false,
-        "pos": "详细词性 (例如: 五段动词·他动词)",
+        "pos": "详细词性 (例如: 五段动词·他动词，な形容词等)",
         "variations": ["变形1", "搭配1"],
         "meanings": [
             {{ "meaning": "中文释义1", "example_jp": "日语例句1", "example_cn": "中文例句1" }},
@@ -304,7 +304,7 @@ def main():
     # 发送邮件
     send_email(email_data_list)
 
-    # 批量更新数据库 (使用 vocab_progress 表名)
+    # 批量更新数据库
     conn = get_db_connection()
     cursor = conn.cursor()
     try:

@@ -7,28 +7,31 @@ from email.utils import formataddr
 from datetime import datetime
 from dotenv import load_dotenv
 
+# =========================
+# 可配置参数
+# =========================
+JLPT_LEVEL = "N4"
+template_file = "read/template_reference.html"
 # 加载 .env 环境变量
 load_dotenv()
+
+
+def get_html_template():
+    """读取HTML模板文件"""
+    with open(template_file, "r", encoding="utf-8") as f:
+        return f.read()
+
 
 def get_ai_content():
     """调用 DeepSeek API 生成日语学习内容"""
     api_key = os.getenv("DEEPSEEK_APIKEY")
     url = "https://api.deepseek.com/v1/chat/completions"
 
-    # --- 新增：从 topic.txt 读取第一行 ---
+    # 从 topic.txt 读取第一行
     topic_file = "read/topic.txt"
-    if not os.path.exists(topic_file):
-        print("❌ 找不到 topic.txt")
-        return None
-
     with open(topic_file, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    if not lines:
-        print("⚠️ topic.txt 为空，没有更多话题可用。")
-        return None
-
-    # 取第一行作为今日话题
     selected_topic = lines[0].strip()
 
     # 删除第一行并写回
@@ -36,96 +39,121 @@ def get_ai_content():
         f.writelines(lines[1:])
 
     print(f"🎯 本次选定话题: {selected_topic}")
-    # --- 新增部分结束 ---
+
+    html_template = get_html_template()
 
     system_prompt = f"""
-    你是一位专业的日语老师。请生成一封适合 N4-N3 水平日语学习者的“每日日语阅读”邮件内容。
-    
-    今天的指定话题是：【{selected_topic}】。
-    请务必围绕这个话题编写内容，不要偏题。
+你是一位专业的日语教师，专攻JLPT {JLPT_LEVEL}水平教学。请生成一封适合{JLPT_LEVEL}水平日语学习者的"每日日语阅读"邮件内容。
 
-    要求：
-    1. 结构：
-       - title: 日语标题（请包含话题相关的趣味性）。
-       - body: 800字左右的日语短文，汉字必须标注假名（格式：漢字(かんじ)）。
-       - translation: 中文翻译。
-       - vocab: 5-10个与【{selected_topic}】相关的核心词汇解释。
-       - grammar: 3-5个短文中出现的 N4/N3 核心语法点讲解。
-    2. 输出格式：直接返回可以在邮件中显示的 HTML 代码（不需要 ```html 包裹），
-       使用内联 CSS 美化，风格简洁清新，适合手机阅读。
-       把主要内容放在一个 max-width: 800px 的 div 容器中。
-       请使用柔和的背景色，给单词和语法部分加上醒目的小标题样式。
-    """
+【今日话题】
+{selected_topic}
 
-    try:
-        response = requests.post(
-            url,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": "DailyJapaneseReader/1.0"
-            },
-            json={
-                "model": "deepseek-chat",
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"请生成关于'{selected_topic}'的阅读材料。"}
-                ],
-                "temperature": 1.0
-            }
-        )
+【生成要求】
+1. 文章内容：
+   - 标题：与话题相关的正式、有深度的日语标题
+   - 正文：500-800字的日语文章，{JLPT_LEVEL}阅读难度
+   - 文章需要有逻辑性，包含观点、分析或说明
 
-        response.raise_for_status()
-        data = response.json()
+2. 中文翻译：
+   - 提供准确、通顺的中文翻译
 
-        if "error" in data:
-            print("❌ DeepSeek API 错误：", data["error"])
-            return None
+3. {JLPT_LEVEL}模拟试题（4问）：
+   - 问题1: 文章主旨题
+   - 问题2: 细节理解题
+   - 问题3: 词义推断题
+   - 问题4: 观点态度题
+   - 每题提供4个选项（日文），并附解析和答案
 
-        return data['choices'][0]['message']['content']
+4. 学习要点：
+   - 8-12个{JLPT_LEVEL}核心词汇（表格形式，包含单词、读音、中文意思）
+   - 4-6个{JLPT_LEVEL}核心语法点（包含接续、用法、例句）
 
-    except Exception as e:
-        print(f"❌ AI 生成失败: {e}")
-        return None
+【HTML格式要求】
+请严格遵循以下HTML模板的结构、样式和格式。请直接生成完整的HTML代码，不需要额外的解释。
 
+{html_template}
 
-# 下面保持 send_email 和 main 函数不变...
+【重要提示】
+1. 用今天的实际日期替换模板中的时间
+2. 保持模板的CSS样式不变
+3. 根据实际内容调整各部分
+4. 确保所有内容都围绕话题【{selected_topic}】展开
+"""
+
+    response = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "DailyJapaneseReader/1.0"
+        },
+        json={
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {
+                    "role": "user",
+                    "content": f"请严格按照模板格式，生成关于「{selected_topic}」的{JLPT_LEVEL}水平日语阅读材料。"
+                }
+            ],
+            "temperature": 0.7,
+            "max_tokens": 8000
+        },
+        timeout=180
+    )
+
+    response.raise_for_status()
+    data = response.json()
+
+    content = data['choices'][0]['message']['content']
+
+    if not content.strip().startswith('<!DOCTYPE html>'):
+        content = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{JLPT_LEVEL}日语阅读练习</title>
+</head>
+<body>
+{content}
+</body>
+</html>"""
+
+    return content
+
 
 def send_email(html_content):
-    """发送 HTML 邮件（修复版）"""
+    """发送 HTML 邮件"""
     sender = os.getenv("SENDER_EMAIL")
     password = os.getenv("SENDER_PASSWORD")
     receiver = os.getenv("RECEIVER_EMAIL")
     smtp_server = os.getenv("SMTP_SERVER")
 
-    # 构建邮件
-    subject = f"📅 每日日语阅读提升 - {datetime.now().strftime('%Y-%m-%d')}"
+    subject = f"📚 {JLPT_LEVEL}日语阅读训练 - {datetime.now().strftime('%Y-%m-%d')}"
     message = MIMEText(html_content, 'html', 'utf-8')
-    
-    # --- 关键修改开始 ---
-    # 使用 formataddr 确保符合 RFC 标准，解决 550 错误
-    # formataddr 会自动处理中文编码，并保持 <email> 部分不被编码
+
     message['From'] = formataddr(("日语阅读助手", sender))
     message['To'] = formataddr(("日语学习者", receiver))
-    # --- 关键修改结束 ---
-    
     message['Subject'] = Header(subject, 'utf-8')
 
-    try:
-        server = smtplib.SMTP_SSL(smtp_server, 465) 
-        server.login(sender, password)
-        server.sendmail(sender, [receiver], message.as_string())
-        server.quit()
-        print(f"✅ 邮件已成功发送给 {receiver}")
-    except smtplib.SMTPException as e:
-        print(f"❌ 邮件发送失败: {e}")
+    server = smtplib.SMTP_SSL(smtp_server, 465)
+    server.login(sender, password)
+    server.sendmail(sender, [receiver], message.as_string())
+    server.quit()
+
+    print(f"✅ 邮件已成功发送给 {receiver}")
+
+
+def main():
+    print(f"🤖 正在生成 {JLPT_LEVEL} 日语阅读材料...")
+    content = get_ai_content()
+
+    print("📝 内容生成完毕，正在发送邮件...")
+    send_email(content)
+
+    print("🎉 任务完成！")
+
 
 if __name__ == "__main__":
-    print("🤖 正在请求 DeepSeek 生成日语教材...")
-    content = get_ai_content()
-    
-    if content:
-        print("📝 内容生成完毕，正在发送邮件...")
-        send_email(content)
-    else:
-        print("⚠️ 无法获取内容，程序终止。")
+    main()
